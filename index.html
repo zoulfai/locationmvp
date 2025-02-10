@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location d'Outils</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .tool { border: 1px solid #ddd; padding: 10px; margin: 10px 0; }
+        button { background-color: #28a745; color: white; border: none; padding: 10px; cursor: pointer; }
+        form { display: none; background: #f4f4f4; padding: 15px; }
+    </style>
+</head>
+<body>
+
+    <h1>Outils Disponibles</h1>
+    <div id="tools-list">
+        <div class="tool">
+            <h3>Perceuse</h3>
+            <p>Prix: 10€/jour</p>
+            <button onclick="openForm('Perceuse')">Réserver</button>
+        </div>
+        <div class="tool">
+            <h3>Scie Circulaire</h3>
+            <p>Prix: 15€/jour</p>
+            <button onclick="openForm('Scie Circulaire')">Réserver</button>
+        </div>
+    </div>
+
+    <h2>Réserver un Outil</h2>
+    <form id="reservation-form">
+        <label>Nom :</label>
+        <input type="text" id="nom" required><br><br>
+        
+        <label>Téléphone :</label>
+        <input type="tel" id="telephone" required><br><br>
+        
+        <label>Outil :</label>
+        <input type="text" id="outil" readonly><br><br>
+
+        <label>Date de retrait :</label>
+        <input type="date" id="date" required><br><br>
+
+        <button type="submit">Envoyer la réservation</button>
+    </form>
+
+    <script>
+        const form = document.getElementById("reservation-form");
+        const outilInput = document.getElementById("outil");
+
+        function openForm(outil) {
+            form.style.display = "block";
+            outilInput.value = outil;
+        }
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const data = {
+                nom: document.getElementById("nom").value,
+                telephone: document.getElementById("telephone").value,
+                outil: document.getElementById("outil").value,
+                date: document.getElementById("date").value
+            };
+
+            fetch("https://script.google.com/macros/s/AKfycbyLp7UQyOVhdX_0SL6VUYrvXX3ZfYXCdnA_NgCF2iPSj_GN2b9S5ihk168hBrufgRTlFg/execT", {
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: { "Content-Type": "application/json" }
+            })
+            .then(response => response.text())
+            .then(result => {
+                alert("Réservation envoyée !");
+                form.reset();
+                form.style.display = "none";
+            })
+            .catch(error => alert("Erreur : " + error));
+        });
+    </script>
+
+</body>
+</html>
