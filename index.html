@@ -47,34 +47,38 @@
     <script>
         const form = document.getElementById("reservation-form");
         const outilInput = document.getElementById("outil");
-
+    
         function openForm(outil) {
             form.style.display = "block";
             outilInput.value = outil;
         }
-
+    
         form.addEventListener("submit", function(event) {
             event.preventDefault();
-
+    
             const data = {
                 nom: document.getElementById("nom").value,
                 telephone: document.getElementById("telephone").value,
                 outil: document.getElementById("outil").value,
                 date: document.getElementById("date").value
             };
+    
+            fetch("https://script.google.com/macros/s/AKfycbwbm_K3vOvob8RJyG7FCXACADe08mmhkqHnTgT07J5Edv1lH105yV_TcLC9sYfkxkBWbQ/exec", {
+    method: "POST",
+    mode: "no-cors", // Désactive CORS (mais la réponse sera opaque)
+    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" }
+})
 
-            fetch("https://script.google.com/macros/s/AKfycbxKQy6hDo1Rf9D00yo_dEAy_5lbKGd-zUZWDhCBY8LAF9kjpAwW694iZ-n3OiAAW4KeIg/exec", {
-                method: "POST",
-                body: JSON.stringify(data),
-                headers: { "Content-Type": "application/json" }
-            })
-            .then(response => response.text())
-            .then(result => {
-                alert("Réservation envoyée !");
-                form.reset();
-                form.style.display = "none";
-            })
-            .catch(error => alert("Erreur : " + error));
+.then(response => response.text()) // 👈 Convertit la réponse en texte (évite les erreurs CORS)
+.then(result => {
+    console.log("Réponse du serveur :", result);
+    alert("Réservation envoyée avec succès !");
+})
+.catch(error => {
+    console.error("Erreur :", error);
+    alert("Erreur lors de l'envoi de la réservation : " + error.message);
+});
         });
     </script>
 
